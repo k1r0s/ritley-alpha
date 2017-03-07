@@ -1,0 +1,36 @@
+{
+  "name": "pokedex-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "cfg": {
+    "port": 6000,
+    "type": "sqlite",
+    "database": "./pkm.sqlite",
+    "models": [
+      {
+        "name": "pkm",
+        "defaults": {
+          "id": 0,
+          "date": 0,
+          "name": "",
+          "desc": "",
+          "type": "",
+          "f_ev": 0,
+          "f_iv": 0
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "node main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kaop": "^2.6.0",
+    "korm": "^0.2.4"
+  }
+}
