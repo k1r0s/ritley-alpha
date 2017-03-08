@@ -12,8 +12,8 @@ nodeInstance = http.createServer(
     //serve static content
     ecstatic({ root: __dirname + pkg.cfg.static })
 );
-nodeInstance.listen(pkg.cfg.port);
-console.log("running on port " + pkg.cfg.port);
+nodeInstance.listen(process.env.PORT || pkg.cfg.port);
+console.log("running on port " + process.env.PORT || pkg.cfg.port);
 
 //create orm instance as service
 ormInstance = korm;
