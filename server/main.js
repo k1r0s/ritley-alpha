@@ -1,11 +1,11 @@
 function init(){
     console.log("bootstraping..");
-    require("./services").then(postInit);
+    require("./service-pool").then(postInit);
 }
 
 function postInit(){
     console.log("postinit done!");
-    require("./aspects");
+    require("./aspect-pool");
 
     var Controller = require("./Controller");
 

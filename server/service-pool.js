@@ -2,8 +2,8 @@ var kaop = require("kaop");
 var korm = require("korm");
 var http = require("http");
 var ecstatic = require("ecstatic");
-var crud = require("./crudEnum");
-var pkg = require("./package");
+var crud = require("./CrudEnum");
+var pkg = require("../package");
 
 var nodeInstance, ormInstance, initSuccess;
 

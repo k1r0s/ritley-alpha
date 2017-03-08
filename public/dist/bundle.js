@@ -74812,7 +74812,7 @@ module.exports={
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm run build && node main",
+    "deploy": "npm run build && node server/main",
     "build": "browserify -t [ stringify --extensions [.tpl ] ] public/app/main.js -o public/dist/bundle.js"
   },
   "keywords": [],
