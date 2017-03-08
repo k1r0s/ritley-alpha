@@ -7,6 +7,7 @@
     "port": 8000,
     "type": "sqlite",
     "database": "./pkm.sqlite",
+    "truncate": true,
     "models": [
       {
         "name": "pkm",
@@ -15,7 +16,8 @@
           "date": 0,
           "name": "",
           "desc": "",
-          "type": "",
+          "type1": 0,
+          "type2": 0,
           "f_ev": 0,
           "f_iv": 0
         }

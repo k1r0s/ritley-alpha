@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Alejandro's Pokedex</title>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    </head>
+    <body ng-app="pokedex" layout="row" ng-cloak>
+
+        <md-sidenav layout="column" class="sidenav1" md-is-locked-open='true'>
+            <md-toolbar class="md-medium-tall">
+                <div class="md-toolbar-tools">
+                    <span class="md-title">Alejandro's Pokedex</span>
+                </div>
+            </md-toolbar>
+            <md-content layout="column" flex>
+                <md-button href="#/pkm/new">New</md-button>
+                <md-button href="#/">List</md-button>
+                <md-button href="#/about">About</md-button>
+            </md-content>
+        </md-sidenav>
+
+        <md-content ng-controller="globalController" ng-init="init()" flex layout="column">
+            <ng-view></ng-view>
+        </md-content>
+    </body>
+    <script src="dist/bundle.js" charset="utf-8"></script>
+
+</html>

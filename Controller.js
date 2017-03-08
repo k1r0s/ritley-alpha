@@ -28,6 +28,8 @@ module.exports = Controller = kaop.Class({
     }, "writeResult"],
 
     put: function(){},
-
-    delete: function(){}
+    delete: function(){},
+    options: [function(){
+        return { status: 200, body: "" }
+    }, "writeResult"]
 });
