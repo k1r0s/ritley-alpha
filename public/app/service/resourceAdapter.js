@@ -12,7 +12,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "GET",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         params: p
                     })
                     .catch(warnError)
@@ -25,7 +25,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "POST",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         headers: {
                             'Content-Type': undefined
                         },
@@ -41,7 +41,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "POST",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         data: p
                     })
                     .catch(warnError)
@@ -54,7 +54,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "DELETE",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         params: p
                     })
                     .catch(warnError)
@@ -67,7 +67,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "PUT",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         data: p
                     })
                     .catch(warnError)

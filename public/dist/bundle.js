@@ -74812,7 +74812,7 @@ module.exports={
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm run build && node server/main",
+    "start": "npm run build && node server/main",
     "build": "browserify -t [ stringify --extensions [.tpl ] ] public/app/main.js -o public/dist/bundle.js"
   },
   "keywords": [],
@@ -74922,7 +74922,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "GET",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         params: p
                     })
                     .catch(warnError)
@@ -74935,7 +74935,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "POST",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         headers: {
                             'Content-Type': undefined
                         },
@@ -74951,7 +74951,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "POST",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         data: p
                     })
                     .catch(warnError)
@@ -74964,7 +74964,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "DELETE",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         params: p
                     })
                     .catch(warnError)
@@ -74977,7 +74977,7 @@ module.exports = function($rootScope, $http, APIROOT) {
                 triggerAjaxState(resource, true);
                 $http({
                         method: "PUT",
-                        url: APIROOT + resource,
+                        url: APIROOT + "/" + resource,
                         data: p
                     })
                     .catch(warnError)

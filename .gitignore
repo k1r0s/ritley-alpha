@@ -1,2 +1,3 @@
 node_modules/
-server/pkm.sqlite
+pkm.sqlite
+public/dist/bundle.js
