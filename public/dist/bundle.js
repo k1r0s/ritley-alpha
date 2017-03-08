@@ -40335,7 +40335,7 @@ module.exports = 'ngMaterial';
 
 },{"./angular-material":5,"angular":12,"angular-animate":2,"angular-aria":4}],7:[function(require,module,exports){
 /**
- * @license AngularJS v1.6.3
+ * @license AngularJS v1.5.11
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -40608,7 +40608,6 @@ angular.module('ngMessages', [], function initAngularHelpers() {
   isString = angular.isString;
   jqLite = angular.element;
 })
-  .info({ angularVersion: '1.6.3' })
 
   /**
    * @ngdoc directive
@@ -74827,7 +74826,7 @@ module.exports={
     "angular-animate": "~1.5.7",
     "angular-aria": "~1.5.7",
     "angular-material": "^1.1.3",
-    "angular-messages": "^1.6.2",
+    "angular-messages": "~1.5.7",
     "angular-route": "~1.5.7",
     "browserify": "^14.1.0",
     "stringify": "^5.1.0"
