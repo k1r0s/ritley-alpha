@@ -2,10 +2,11 @@ var angular = require("angular");
 var angularRou = require("angular-route");
 var angularMsg = require("angular-messages");
 var angularMat = require("angular-material");
+var pkg = require("../../package");
 
 window.APP = angular.module("pokedex", [angularRou, angularMsg, angularMat]);
 
-APP.constant("APIROOT", "http://localhost:8000/");
+APP.constant("APIROOT", pkg.cfg.base);
 APP.factory("resourceAdapter", require("./service/resourceAdapter"));
 APP.controller("globalController", require("./controller/globalController"));
 APP.controller("listController", require("./controller/listController"));

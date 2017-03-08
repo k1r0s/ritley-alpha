@@ -4,7 +4,7 @@ kaop.Decorators.push(
     kaop.Phase.EXECUTE,
     function resource(){
         $$nodeInstance.on("request", function(req, res) {
-            if(req.url.search(meta.args[0]) > -1){
+            if(req.url.startsWith($$base) && req.url.search(meta.args[0]) > -1){
                 this[req.method.toLocaleLowerCase()].call(this, req, res);
             }
         }.bind(this));
