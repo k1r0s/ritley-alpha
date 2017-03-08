@@ -46,18 +46,21 @@ kaop.Decorators.push(
         if(meta.result.then){
             meta.result.then(function(result){
                 res.statusCode = 200;
+                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.write(JSON.stringify(result));
                 res.end();
             });
             meta.result.catch(function(result){
                 console.log(result);
                 res.statusCode = 500;
+                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.write(JSON.stringify({ message: "there was an error :(" }));
                 res.end();
             });
         }else{
             var result = meta.result;
             res.statusCode = result.status;
+            res.setHeader("Access-Control-Allow-Origin", "*");
             res.write(JSON.stringify(result.body));
             res.end();
         }
