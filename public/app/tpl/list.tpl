@@ -12,7 +12,6 @@
 
                       <md-radio-button ng-click="globalFav = undefined">Todos</md-radio-button>
                       <md-radio-button value="true">Favs</md-radio-button>
-
                     </md-radio-group>
             </md-input-container>
 
@@ -37,10 +36,10 @@
             <md-button ng-click="delete(pkm.id)" class="md-icon-button">
                 <md-icon md-menu-align-target>delete</md-icon>
             </md-button>
-            <md-button ng-if="!isFav(pkm.id)" ng-click="fav(pkm.id)" class="md-icon-button">
+            <md-button ng-if="!isFav(pkm)" ng-click="fav(pkm)" class="md-icon-button">
                 <md-icon md-menu-align-target>favorite_border</md-icon>
             </md-button>
-            <md-button ng-if="isFav(pkm.id)" ng-click="unfav(pkm.id)" class="md-icon-button">
+            <md-button ng-if="isFav(pkm)" ng-click="unfav(pkm)" class="md-icon-button">
                 <md-icon md-menu-align-target>favorite</md-icon>
             </md-button>
         </md-list-item>

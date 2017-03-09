@@ -5,24 +5,27 @@ module.exports = function($scope, resourceAdapter, $mdToast, favManager){
     };
 
     $scope.fav = function(pkm){
-        pkm._fav = true;
-        if(!favManager.add(pkm)){
-            $mdToast.show(
-              $mdToast.simple()
-                .textContent('No puedes añadir mas de 10!')
-                .position($scope.getToastPosition())
-                .hideDelay(3000)
-            );
+        if(!favManager.add(pkm.id)){
+            //si, es un alert
+            alert("No puedes añadir mas de 10!");
+            // $mdToast.show(
+            //   $mdToast.simple()
+            //     .textContent('No puedes añadir mas de 10!')
+            //     .position(asdasdasdasda)
+            //     .hideDelay(2000)
+            // );
+            return;
         }
+        pkm._fav = true;
     };
-    
+
     $scope.isFav = function(pkm){
-        return favManager.has(pkm);
+        return favManager.has(pkm.id);
     };
 
     $scope.unfav = function(pkm){
         delete pkm._fav;
-        favManager.remove(pkm);
+        favManager.remove(pkm.id);
     };
 
     $scope.delete = function(id){
