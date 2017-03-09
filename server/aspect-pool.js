@@ -1,7 +1,28 @@
 var kaop = require("kaop");
 
+
+/**
+ * más info sobre la lib
+ * https://github.com/k1r0s/kaop
+ * https://github.com/k1r0s/kaop-ts
+ */
+
 kaop.Decorators.push(
     kaop.Phase.EXECUTE,
+
+    /**
+     * resource - este advice debe ser definido en el constructor de una clase
+     * transforma la clase en un controlador de recurso. El advice espera que la
+     * clase anotada tenga los siguientes métodos [get, post, put, delete].
+     *
+     * el advice añade un listener para el evento 'request'
+     *
+     * el advice comprueba si la url que se está solicitando empieza por $$base
+     * que en este caso es nuestra ruta para el servicio API rest
+     *
+     * en caso de cumplirse la condición el advice llama al método correspondiente
+     * en función del verbo http solicitado
+     */
     function resource(){
         $$nodeInstance.on("request", function(req, res) {
             if(req.url.startsWith($$base) && req.url.search(meta.args[0]) > -1){
@@ -9,10 +30,25 @@ kaop.Decorators.push(
             }
         }.bind(this));
     },
+
+
+    /**
+     * parseQuery - este advice se encarga de parsear los parámetros de queryString
+     * que contiene la url y guardarlos en la nueva propiedad 'query' del primer argumento (res)
+     */
     function parseQuery(){
         var req = meta.args[0];
         req.query = $$parse(req.url);
     },
+
+    /**
+     * parseBody - este advice se encarga de recibir el payload de la request,
+     * cuando finaliza el proceso lo guarda en la nueva propiedad 'body' (evaluado)
+     * y delega en el siguiente advice
+     *
+     * Este advice eliminará todas las propiedades del body que empiecen por '_'
+     *
+     */
     function parseBody(){
         var req = meta.args[0];
         req.body = "";
@@ -29,7 +65,16 @@ kaop.Decorators.push(
             next();
         });
     },
+
+    /**
+     * $inject  - Ejemplo de DI. Este advice se encarga de recorrer los parámentros de la función anotada
+     * analiza si alguno de ellos se llama igual que algún servicio definido.
+     *
+     * En caso afirmativo remplaza el argumento implementado con la instancia del servicio
+     *
+     */
     function $inject(){
+        // recoger los argumentos del método
         var implementedArgs = /\((.*,?)*\)/g
         .exec(meta.method.toString())
         .pop()
@@ -46,10 +91,25 @@ kaop.Decorators.push(
             }
         }
     },
+
+    /**
+     * translateCRUD - este advice sencillamente define una nueva propiedad en el request
+     * en función del verbo http
+     *
+     * por ejemplo, si el método es GET, define 'read' (req.action = 'read')
+     *
+     */
     function translateCRUD(){
         var req = meta.args[0];
         req.action = $$crud[req.method.toLocaleLowerCase()];
     },
+
+
+    /**
+     * writeResult - devuelve la respuesta para el cliente en función de los parámetros
+     * devueltos en el método anotado. Normalmente devolverá el recurso serializado.
+     * En caso de error devolverá un status 500
+     */
     function writeResult(){
         var res = meta.args[1];
         if(meta.result.then){
@@ -74,6 +134,11 @@ kaop.Decorators.push(
             res.end();
         }
     },
+
+    /**
+     * dataAssambly - aquí podría definirse el acceso a los datos por medio de un advice
+     *
+     */
     function dataAssambly(){
 
     }
