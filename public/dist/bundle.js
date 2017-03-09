@@ -74834,18 +74834,59 @@ module.exports={
 }
 
 },{}],14:[function(require,module,exports){
-module.exports = function($scope, resourceAdapter, $route){
+module.exports = function($scope, resourceAdapter, $route, $location){
+
     $scope.init = function(){
-        if($route.current.params === "new"){
-            $scope.model = {}
+        if(isNaN($route.current.params.id)){
+            $scope.model = {};
         }else{
-            $scope.model = $scope.APP.pkmList[$route.current.params];
+            var id = parseInt($route.current.params.id);
+            // pkm => pkm.id === id
+            $scope.model = $scope.APP.pkmList.find(function(pkm){
+                return pkm.id === id;
+            });
         }
+    };
+
+    $scope.save = function(){
+        if($scope.model.id) {
+            updatePkm($scope.model);
+        } else {
+            createPkm($scope.model);
+        }
+    };
+
+    function updatePkm(payload){
+        resourceAdapter("pkm", payload).put(handleResponse);
     }
-}
+
+    function createPkm(payload){
+        resourceAdapter("pkm", payload).post(handleResponse);
+    }
+
+    function handleResponse(res){
+        if(res.status === 200){
+            var newPkm = angular.copy($scope.model);
+            if($scope.model.id){
+                // pkm => pkm.id === id
+                var index = $scope.APP.pkmList.findIndex(function(pkm){
+                    return pkm.id === $scope.model.id;
+                });
+                $scope.APP.pkmList[index] = newPkm;
+            }else{
+                newPkm = res.data.id;
+                $scope.APP.pkmList.push(newPkm);
+            }
+            $location.path('list');
+        } else {
+            console.error(":( ...");
+        }
+
+    }
+};
 
 },{}],15:[function(require,module,exports){
-module.exports = function($scope, resourceAdapter, $http){
+module.exports = function($scope, resourceAdapter, $http, favManager){
     $scope.init = function(){
         $scope.APP = {
             pkmList: [],
@@ -74853,7 +74894,7 @@ module.exports = function($scope, resourceAdapter, $http){
         };
 
         fetchTypesList();
-    }
+    };
 
     function fetchPkmList(){
         resourceAdapter("pkm").get(function(res){
@@ -74861,10 +74902,13 @@ module.exports = function($scope, resourceAdapter, $http){
         });
     }
 
-    function processList(rawPkm){
+
+    function processList(rawPkm, i, arr){
         var pkm = rawPkm;
         pkm._type1 = $scope.APP.pkmTypes[rawPkm.type1];
         pkm._type2 = $scope.APP.pkmTypes[rawPkm.type2];
+        pkm._fev = arr[rawPkm.f_ev];
+        pkm._fav = !!favManager.has(rawPkm.id);
         return pkm;
     }
 
@@ -74874,15 +74918,49 @@ module.exports = function($scope, resourceAdapter, $http){
             fetchPkmList();
         });
     }
-}
+};
 
 },{}],16:[function(require,module,exports){
-module.exports = function($scope, resourceAdapter){
+module.exports = function($scope, resourceAdapter, $mdToast, favManager){
 
     $scope.init = function(){
 
-    }
-}
+    };
+
+    $scope.fav = function(pkm){
+        pkm._fav = true;
+        if(!favManager.add(pkm)){
+            $mdToast.show(
+              $mdToast.simple()
+                .textContent('No puedes añadir mas de 10!')
+                .position($scope.getToastPosition())
+                .hideDelay(3000)
+            );
+        }
+    };
+    
+    $scope.isFav = function(pkm){
+        return favManager.has(pkm);
+    };
+
+    $scope.unfav = function(pkm){
+        delete pkm._fav;
+        favManager.remove(pkm);
+    };
+
+    $scope.delete = function(id){
+        resourceAdapter("pkm", {id: id}).del(function(res){
+            if(res.status === 200){
+                var index = $scope.APP.pkmList.findIndex(function(pkm){
+                    return pkm.id === id;
+                });
+
+                $scope.APP.pkmList.splice(index, 1);
+            }
+        });
+    };
+
+};
 
 },{}],17:[function(require,module,exports){
 var angular = require("angular");
@@ -74895,19 +74973,64 @@ window.APP = angular.module("pokedex", [angularRou, angularMsg, angularMat]);
 
 APP.constant("APIROOT", pkg.cfg.base);
 APP.factory("resourceAdapter", require("./service/resourceAdapter"));
+APP.factory("favManager", require("./service/favManager"));
 APP.controller("globalController", require("./controller/globalController"));
 APP.controller("listController", require("./controller/listController"));
 APP.controller("formController", require("./controller/formController"));
 
-APP.config(function($routeProvider){
+APP.config(function($routeProvider, $mdThemingProvider) {
 
-    $routeProvider.when("/", { template: require("./tpl/list.tpl") });
-    $routeProvider.when("/pkm/:id", { template: require("./tpl/form.tpl") });
-    $routeProvider.when("/about", { template: require("./tpl/about.tpl") });
+    $routeProvider.when("/", {
+        template: require("./tpl/list.tpl")
+    });
+    $routeProvider.when("/pkm/:id", {
+        template: require("./tpl/form.tpl")
+    });
+    $routeProvider.when("/about", {
+        template: require("./tpl/about.tpl")
+    });
     $routeProvider.otherwise("/");
+
+    $mdThemingProvider.theme('default')
+        .primaryPalette('red')
+        .accentPalette('orange');
+
 });
 
-},{"../../package":13,"./controller/formController":14,"./controller/globalController":15,"./controller/listController":16,"./service/resourceAdapter":18,"./tpl/about.tpl":19,"./tpl/form.tpl":20,"./tpl/list.tpl":21,"angular":12,"angular-material":6,"angular-messages":8,"angular-route":10}],18:[function(require,module,exports){
+},{"../../package":13,"./controller/formController":14,"./controller/globalController":15,"./controller/listController":16,"./service/favManager":18,"./service/resourceAdapter":19,"./tpl/about.tpl":20,"./tpl/form.tpl":21,"./tpl/list.tpl":22,"angular":12,"angular-material":6,"angular-messages":8,"angular-route":10}],18:[function(require,module,exports){
+module.exports = function(){
+    function set(favsArr){
+        var store = JSON.stringify(favsArr || []);
+        sessionStorage.setItem("favs", store);
+    }
+
+    function get(){
+        var store = sessionStorage.getItem("favs");
+        return JSON.parse(store || "[]");
+    }
+
+    return {
+        add: function(pkmid){
+            var favs = get();
+            if(favs.length > 10) return;
+            favs.push(pkmid);
+            set(favs);
+            return true;
+        },
+        remove: function(pkmid){
+            var favs = get();
+            var index = favs.indexOf(pkmid);
+            favs.splice(index, 1);
+            set(favs);
+        },
+        has: function(pkmid){
+            var favs = get();
+            return favs.indexOf(pkmid) > -1;
+        }
+    };
+};
+
+},{}],19:[function(require,module,exports){
 module.exports = function($rootScope, $http, APIROOT) {
     $rootScope.loading = {};
     function warnError(res){
@@ -74990,13 +75113,13 @@ module.exports = function($rootScope, $http, APIROOT) {
     };
 };
 
-},{}],19:[function(require,module,exports){
-module.exports = "";
-
 },{}],20:[function(require,module,exports){
-module.exports = "<section ng-controller=\"formController\" ng-init=\"init()\">\n    <md-content layout-padding>\n        <!-- <form name=\"projectForm\">\n            <md-input-container class=\"md-block\">\n                <label>Description</label>\n                <input md-maxlength=\"30\" required md-no-asterisk name=\"description\" ng-model=\"project.description\">\n                <div ng-messages=\"projectForm.description.$error\">\n                    <div ng-message=\"required\">This is required.</div>\n                    <div ng-message=\"md-maxlength\">The description must be less than 30 characters long.</div>\n                </div>\n            </md-input-container>\n\n            <div layout=\"row\">\n                <md-input-container flex=\"50\">\n                    <label>Client Name</label>\n                    <input required name=\"clientName\" ng-model=\"project.clientName\">\n                    <div ng-messages=\"projectForm.clientName.$error\">\n                        <div ng-message=\"required\">This is required.</div>\n                    </div>\n                </md-input-container>\n\n                <md-input-container flex=\"50\">\n                    <label>Project Type</label>\n                    <md-select name=\"type\" ng-model=\"project.type\" required>\n                        <md-option value=\"app\">Application</md-option>\n                        <md-option value=\"web\">Website</md-option>\n                    </md-select>\n                </md-input-container>\n            </div>\n\n            <md-input-container class=\"md-block\">\n                <label>Client Email</label>\n                <input required type=\"email\" name=\"clientEmail\" ng-model=\"project.clientEmail\" minlength=\"10\" maxlength=\"100\" ng-pattern=\"/^.+@.+\\..+$/\"/>\n\n                <div ng-messages=\"projectForm.clientEmail.$error\" role=\"alert\">\n                    <div ng-message-exp=\"['required', 'minlength', 'maxlength', 'pattern']\">\n                        Your email must be between 10 and 100 characters long and look like an e-mail address.\n                    </div>\n                </div>\n            </md-input-container>\n\n            <md-input-container class=\"md-block\">\n                <label>Hourly Rate (USD)</label>\n                <input required type=\"number\" step=\"any\" name=\"rate\" ng-model=\"project.rate\" min=\"800\" max=\"4999\" ng-pattern=\"/^1234$/\"/>\n\n                <div ng-messages=\"projectForm.rate.$error\" multiple md-auto-hide=\"false\">\n                    <div ng-message=\"required\">\n                        You've got to charge something! You can't just\n                        <b>give away</b>\n                        a Missile Defense System.\n                    </div>\n\n                    <div ng-message=\"min\">\n                        You should charge at least $800 an hour. This job is a big deal... if you mess up, everyone dies!\n                    </div>\n\n                    <div ng-message=\"pattern\">\n                        You should charge exactly $1,234.\n                    </div>\n\n                    <div ng-message=\"max\">\n                        {{projectForm.rate.$viewValue | currency:\"$\":0}}\n                        an hour? That's a little ridiculous. I doubt even Bill Clinton could afford that.\n                    </div>\n                </div>\n            </md-input-container>\n\n            <md-input-container class=\"md-block\">\n                <md-checkbox name=\"tos\" ng-model=\"project.tos\" required>\n                    I accept the terms of service.\n                </md-checkbox>\n                <div ng-messages=\"projectForm.tos.$error\" multiple md-auto-hide=\"false\">\n                    <div ng-message=\"required\">\n                        You must accept the terms of service before you can proceed.\n                    </div>\n                </div>\n            </md-input-container>\n\n            <md-input-container class=\"md-block\">\n                <md-switch class=\"md-primary\" name=\"special\" ng-model=\"project.special\" required>\n                    Enable special options.\n                </md-switch>\n                <div ng-messages=\"projectForm.special.$error\" multiple>\n                    <div ng-message=\"required\">\n                        You must enable all special options before you can proceed.\n                    </div>\n                </div>\n            </md-input-container>\n            <div>\n                <md-button type=\"submit\">Submit</md-button>\n            </div>\n        </form> -->\n    </md-content>\n</section>\n";
+module.exports = "<md-content layout-padding>\n    <a href=\"https://github.com/k1r0s/asv-pokedex\">Repo</a>\n    <a href=\"https://asv-pokedex.herokuapp.com\">Heroku</a>\n    <p>\n        Por hacer:\n    </p>\n    <p>No puedo aplicar directivas ng-pattern en esta versión de angular, y las versiones superiores no son compatibles con 'materials'. en codepen funcionaba perfectamente con v1.6.2 ng-pattern=\"/^[a-zA-Z]{4,24}$/\".</p>\n\n    <p>Algunos de los mensajes de validación no se muestran para ng-maxlength o ng-minlength, he estado buscando pero he considerado que no procede perder tiempo con esto.</p>\n\n</md-content>\n";
 
 },{}],21:[function(require,module,exports){
-module.exports = "<section ng-controller=\"listController\" ng-init=\"init()\">\n\n\n    <md-list-item class=\"md-3-line\" ng-repeat=\"pkm in APP.pkmList\">\n        <div class=\"md-list-item-text\" layout=\"column\">\n            <h3>#{{pkm.id}} - {{ pkm.name }}</h3> <small>Tipo: {{pkm._type1.name}} {{pkm._type2.name}}</small>\n            <p>\n                {{pkm.desc}}\n            </p>\n        </div>\n        <md-button href=\"#/pkm/{{pkm.id}}\">Editar</md-button>\n    </md-list-item>\n\n</section>\n";
+module.exports = "<section ng-controller=\"formController\" ng-init=\"init()\">\n    <md-content layout-padding>\n        <form novalidate name=\"pkmForm\" ng-submit=\"save(model)\">\n            <div layout=\"row\">\n                <md-input-container class=\"md-block\">\n                    <label>Nombre</label>\n                    <!-- ng-pattern=\"/^[a-zA-Z]{4,24}$/\" -->\n                    <input ng-model=\"model.name\" name=\"name\" required ng-minlength=\"4\" ng-maxlength=\"24\">\n                    <div ng-messages=\"pkmForm.name.$error\" role=\"alert\" md-auto-hide=\"false\">\n                        <div ng-message=\"required\">Este campo es requerido.</div>\n                        <div ng-message-exp=\"['ng-minlength', 'ng-maxlength']\">Este campo debe contener entre 4 y 24 caracteres.</div>\n                    </div>\n                </md-input-container>\n            </div>\n            <div layout=\"row\">\n                <md-input-container flex=\"40\">\n                    <label>Descripción</label>\n                    <textarea ng-model=\"model.desc\" name=\"desc\" required ng-minlength=\"30\" rows=\"2\"></textarea>\n                    <div ng-messages=\"pkmForm.desc.$error\" role=\"alert\" md-auto-hide=\"false\">\n                        <div ng-message=\"required\">Este campo es requerido.</div>\n                        <div ng-message=\"ng-minlength\">Este campo debe contener cómo mínimo 30 caracteres.</div>\n                    </div>\n                </md-input-container>\n                <md-input-container flex=\"30\">\n                        <md-autocomplete name=\"type1\" md-selected-item-change=\"model.type1 = APP.pkmTypes.indexOf(model._type1)\" required md-selected-item=\"model._type1\" md-search-text=\"searchFilterType1\" md-items=\"type in APP.pkmTypes | filter:searchFilterType1\" md-item-text=\"type.name\" md-min-length=\"0\" placeholder=\"Tipo 1\">\n                            <md-item-template>\n                                <div md-highlight-text=\"searchFilterType1\" md-highlight-flags=\"^i\" class=\"pkm-type pkm-type-{{$index}}\">{{type.name}}</div>\n                            </md-item-template>\n                        </md-autocomplete>\n                        <div ng-messages=\"pkmForm.type1.$error\" role=\"alert\" md-auto-hide=\"false\">\n                            <div ng-message=\"required\">Este campo es requerido.</div>\n                        </div>\n                </md-input-container>\n                <md-input-container flex=\"30\">\n                        <md-autocomplete md-selected-item-change=\"model.type2 = APP.pkmTypes.indexOf(model._type2)\" md-selected-item=\"model._type2\" md-search-text=\"searchFilterType2\" md-items=\"type in APP.pkmTypes | filter:searchFilterType2\" md-item-text=\"type.name\" md-min-length=\"0\" placeholder=\"Tipo 2\">\n                            <md-item-template>\n                                <span md-highlight-text=\"searchFilterType2\" md-highlight-flags=\"^i\" class=\"pkm-type pkm-type-{{$index}}\">{{type.name}}</span>\n                            </md-item-template>\n                        </md-autocomplete>\n                </md-input-container>\n            </div>\n            <div layout=\"row\">\n                <md-input-container flex=\"30\">\n                        <md-autocomplete md-selected-item-change=\"model.f_ev = APP.pkmList.indexOf(model._fev)\" md-selected-item=\"model._fev\" md-search-text=\"searchEvol\" md-items=\"pkm in APP.pkmList | filter:searchEvol\" md-item-text=\"pkm.name\" md-min-length=\"0\" placeholder=\"Evolución\">\n                            <md-item-template>\n                                <span md-highlight-text=\"searchEvol\" md-highlight-flags=\"^i\" >{{pkm.name}}</span>\n                            </md-item-template>\n                        </md-autocomplete>\n                </md-input-container>\n            </div>\n            <md-button type=\"submit\" ng-disabled=\"pkmForm.$invalid\">Guardar</md-button>\n        </form>\n    </md-content>\n</section>\n";
+
+},{}],22:[function(require,module,exports){
+module.exports = "<section ng-controller=\"listController\" ng-init=\"init()\">\n\n    <md-content layout-padding>\n        <div layout=\"row\">\n            <md-input-container flex=\"80\">\n                <label>Filtrar</label>\n                <input ng-model=\"globalFilter\">\n            </md-input-container>\n\n            <md-input-container flex=\"20\">\n                <md-radio-group ng-model=\"globalFav\">\n\n                      <md-radio-button ng-click=\"globalFav = undefined\">Todos</md-radio-button>\n                      <md-radio-button value=\"true\">Favs</md-radio-button>\n\n                    </md-radio-group>\n            </md-input-container>\n\n        </div>\n\n        <md-list-item class=\"md-3-line\" ng-repeat=\"pkm in APP.pkmList | filter: { _fav: globalFav, name: globalFilter }\">\n            <div class=\"md-list-item-text\" layout=\"column\">\n                <h3>#{{pkm.id}}\n                    -\n                    {{ pkm.name }}</h3>\n                <div layout=\"row\" layout-align=\"left\">\n                    <div class=\"pkm-type pkm-type-{{pkm.type1}}\">{{pkm._type1.name}}</div>\n                    <div class=\"pkm-type pkm-type-{{pkm.type2}}\">{{pkm._type2.name}}</div>\n                </div>\n                <p>\n                    {{pkm.desc}}\n                </p>\n            </div>\n            <md-button href=\"#/pkm/{{pkm.id}}\" class=\"md-icon-button\">\n                <md-icon md-menu-align-target>mode_edit</md-icon>\n            </md-button>\n            <md-button ng-click=\"delete(pkm.id)\" class=\"md-icon-button\">\n                <md-icon md-menu-align-target>delete</md-icon>\n            </md-button>\n            <md-button ng-if=\"!isFav(pkm.id)\" ng-click=\"fav(pkm.id)\" class=\"md-icon-button\">\n                <md-icon md-menu-align-target>favorite_border</md-icon>\n            </md-button>\n            <md-button ng-if=\"isFav(pkm.id)\" ng-click=\"unfav(pkm.id)\" class=\"md-icon-button\">\n                <md-icon md-menu-align-target>favorite</md-icon>\n            </md-button>\n        </md-list-item>\n    </md-content>\n</section>\n";
 
 },{}]},{},[17]);

@@ -1,11 +1,12 @@
 var kaop = require("kaop");
 var korm = require("korm");
 var http = require("http");
+var url = require("url");
 var ecstatic = require("ecstatic");
 var crud = require("./CrudEnum");
 var pkg = require("../package");
 
-var nodeInstance, ormInstance, initSuccess, staticMiddleware;
+var nodeInstance, ormInstance, initSuccess, staticMiddleware, urlParser;
 
 //create node instance as service
 nodeInstance = http.createServer();
@@ -28,8 +29,13 @@ initSuccess = ormInstance.open(
     pkg.cfg.models
 );
 
+urlParser = function(raw){
+    return url.parse(raw, true).query;
+};
+
 //declare services as local properties in advices
 kaop.Decorators.locals = {
+    $$parse: urlParser,
     $$base: pkg.cfg.base,
     $$nodeInstance: nodeInstance,
     $$ormInstance: ormInstance,

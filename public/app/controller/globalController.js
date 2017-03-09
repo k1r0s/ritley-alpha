@@ -1,4 +1,4 @@
-module.exports = function($scope, resourceAdapter, $http){
+module.exports = function($scope, resourceAdapter, $http, favManager){
     $scope.init = function(){
         $scope.APP = {
             pkmList: [],
@@ -6,7 +6,7 @@ module.exports = function($scope, resourceAdapter, $http){
         };
 
         fetchTypesList();
-    }
+    };
 
     function fetchPkmList(){
         resourceAdapter("pkm").get(function(res){
@@ -14,10 +14,13 @@ module.exports = function($scope, resourceAdapter, $http){
         });
     }
 
-    function processList(rawPkm){
+
+    function processList(rawPkm, i, arr){
         var pkm = rawPkm;
         pkm._type1 = $scope.APP.pkmTypes[rawPkm.type1];
         pkm._type2 = $scope.APP.pkmTypes[rawPkm.type2];
+        pkm._fev = arr[rawPkm.f_ev];
+        pkm._fav = !!favManager.has(rawPkm.id);
         return pkm;
     }
 
@@ -27,4 +30,4 @@ module.exports = function($scope, resourceAdapter, $http){
             fetchPkmList();
         });
     }
-}
+};

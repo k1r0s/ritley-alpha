@@ -14,7 +14,7 @@ module.exports = Controller = kaop.Class({
             action: req.action,
             entity: this.uri,
             where: req.query
-        })
+        });
     }, "writeResult"],
 
     post: ["parseBody", "translateCRUD", "$inject", function(req, res, $$ormInstance){
@@ -27,9 +27,28 @@ module.exports = Controller = kaop.Class({
         });
     }, "writeResult"],
 
-    put: function(){},
-    delete: function(){},
+    put: ["parseBody", "translateCRUD", "$inject", function(req, res, $$ormInstance){
+        //validate
+
+        return $$ormInstance.do({
+            action: req.action,
+            entity: this.uri,
+            subject: req.body,
+            where: { id: req.body.id }
+        });
+    }, "writeResult"],
+
+    delete: ["parseQuery", "translateCRUD", "$inject", function(req, res, $$ormInstance){
+        //validate
+
+        return $$ormInstance.do({
+            action: req.action,
+            entity: this.uri,
+            where: { id: req.query.id }
+        });
+    }, "writeResult"],
+
     options: [function(){
-        return { status: 200, body: "" }
+        return { status: 200, body: "" };
     }, "writeResult"]
 });

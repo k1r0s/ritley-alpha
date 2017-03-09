@@ -9,6 +9,10 @@ kaop.Decorators.push(
             }
         }.bind(this));
     },
+    function parseQuery(){
+        var req = meta.args[0];
+        req.query = $$parse(req.url);
+    },
     function parseBody(){
         var req = meta.args[0];
         req.body = "";
@@ -17,6 +21,11 @@ kaop.Decorators.push(
         });
         req.on("end", function(){
             req.body = JSON.parse(req.body);
+            for (var variable in req.body) {
+                if (variable.startsWith("_")) {
+                    delete req.body[variable];
+                }
+            }
             next();
         });
     },
