@@ -42,7 +42,10 @@
             </div>
         </md-toolbar>
         <md-content ng-controller="globalController" ng-init="init()" flex layout="column">
-            <ng-view></ng-view>
+            <div layout="row" layout-sm="column" layout-align="space-around" ng-show="loading.pkm">
+                <md-progress-circular md-mode="indeterminate" ></md-progress-circular>
+            </div>
+            <ng-view ng-hide="loading.pkm"></ng-view>
         </md-content>
     </body>
     <script src="dist/bundle.js" charset="utf-8"></script>

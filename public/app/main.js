@@ -27,7 +27,7 @@ APP.config(function($routeProvider, $mdThemingProvider) {
     $routeProvider.otherwise("/");
 
     $mdThemingProvider.theme('default')
-        .primaryPalette('red')
+        .primaryPalette('light-green')
         .accentPalette('orange');
 
 });

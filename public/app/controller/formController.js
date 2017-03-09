@@ -13,10 +13,12 @@ module.exports = function($scope, resourceAdapter, $route, $location){
     };
 
     $scope.save = function(){
-        if($scope.model.id) {
-            updatePkm($scope.model);
+        var payload = angular.copy($scope.model);
+        delete payload._fev;
+        if(payload.id) {
+            updatePkm(payload);
         } else {
-            createPkm($scope.model);
+            createPkm(payload);
         }
     };
 
@@ -38,7 +40,7 @@ module.exports = function($scope, resourceAdapter, $route, $location){
                 });
                 $scope.APP.pkmList[index] = newPkm;
             }else{
-                newPkm = res.data.id;
+                newPkm.id = res.data.pop().id;
                 $scope.APP.pkmList.push(newPkm);
             }
             $location.path('list');

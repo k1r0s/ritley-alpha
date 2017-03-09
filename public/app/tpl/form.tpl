@@ -8,7 +8,7 @@
                     <input ng-model="model.name" name="name" required ng-minlength="4" ng-maxlength="24">
                     <div ng-messages="pkmForm.name.$error" role="alert" md-auto-hide="false">
                         <div ng-message="required">Este campo es requerido.</div>
-                        <div ng-message-exp="['ng-minlength', 'ng-maxlength']">Este campo debe contener entre 4 y 24 caracteres.</div>
+                        <div ng-message-exp="['ngMinlength', 'ngMaxlength']">Este campo debe contener entre 4 y 24 caracteres.</div>
                     </div>
                 </md-input-container>
             </div>
@@ -18,7 +18,7 @@
                     <textarea ng-model="model.desc" name="desc" required ng-minlength="30" rows="2"></textarea>
                     <div ng-messages="pkmForm.desc.$error" role="alert" md-auto-hide="false">
                         <div ng-message="required">Este campo es requerido.</div>
-                        <div ng-message="ng-minlength">Este campo debe contener cómo mínimo 30 caracteres.</div>
+                        <div ng-message="ngMinlength">Este campo debe contener cómo mínimo 30 caracteres.</div>
                     </div>
                 </md-input-container>
                 <md-input-container flex="30">
@@ -34,7 +34,7 @@
                 <md-input-container flex="30">
                         <md-autocomplete md-selected-item-change="model.type2 = APP.pkmTypes.indexOf(model._type2)" md-selected-item="model._type2" md-search-text="searchFilterType2" md-items="type in APP.pkmTypes | filter:searchFilterType2" md-item-text="type.name" md-min-length="0" placeholder="Tipo 2">
                             <md-item-template>
-                                <span md-highlight-text="searchFilterType2" md-highlight-flags="^i" class="pkm-type pkm-type-{{$index}}">{{type.name}}</span>
+                                <div md-highlight-text="searchFilterType2" md-highlight-flags="^i" class="pkm-type pkm-type-{{$index}}">{{type.name}}</div>
                             </md-item-template>
                         </md-autocomplete>
                 </md-input-container>
