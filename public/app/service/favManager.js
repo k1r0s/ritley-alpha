@@ -1,6 +1,6 @@
 
 /**
- * module - servicio que maneja los estados de favoritos y los almacena en el sessionStorage,
+ * module - servicio que maneja los estados de favoritos y los almacena en el localStorage,
  * cada usuario (sesión) tendrá acceso a determinados pkm favoritos
  *
  * @return {type}  description
@@ -8,24 +8,24 @@
 module.exports = function(){
 
     /**
-     * set - guarda la representación de los favoritos en sessionStorage
+     * set - guarda la representación de los favoritos en localStorage
      *
      * @param  {type} favsArr description
      * @return {type}         description
      */
     function set(favsArr){
         var store = JSON.stringify(favsArr || []);
-        sessionStorage.setItem("favs", store);
+        localStorage.setItem("favs", store);
     }
 
 
     /**
-     * get - devuelve un array con la representación de los favoritos a partir del sessionStorage
+     * get - devuelve un array con la representación de los favoritos a partir del localStorage
      *
      * @return {type}  description
      */
     function get(){
-        var store = sessionStorage.getItem("favs");
+        var store = localStorage.getItem("favs");
         return JSON.parse(store || "[]");
     }
 
