@@ -10,27 +10,6 @@ var kaop = require("kaop");
 kaop.Decorators.push(
     kaop.Phase.EXECUTE,
 
-    /**
-     * resource - este advice debe ser definido en el constructor de una clase
-     * transforma la clase en un controlador de recurso. El advice espera que la
-     * clase anotada tenga los siguientes métodos [get, post, put, delete].
-     *
-     * el advice añade un listener para el evento 'request'
-     *
-     * el advice comprueba si la url que se está solicitando empieza por $$base
-     * que en este caso es nuestra ruta para el servicio API rest
-     *
-     * en caso de cumplirse la condición el advice llama al método correspondiente
-     * en función del verbo http solicitado
-     */
-    function resource(){
-        $$nodeInstance.on("request", function(req, res) {
-            if(req.url.startsWith($$base) && req.url.search(meta.args[0]) > -1){
-                this[req.method.toLocaleLowerCase()].call(this, req, res);
-            }
-        }.bind(this));
-    },
-
 
     /**
      * parseQuery - este advice se encarga de parsear los parámetros de queryString

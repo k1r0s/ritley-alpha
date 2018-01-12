@@ -1,53 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Alejandro's Pokedex</title>
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="app/css/types.style.css">
-        <meta name="viewport" content="width=device-width, user-scalable=no">
-    </head>
-    <body ng-app="pokedex" ng-cloak>
-
-        <md-toolbar class="md-hue-2">
-            <div class="md-toolbar-tools">
-                <span class="md-title">Alejandro's Pokedex</span>
-                <md-menu>
-                    <md-button class="md-icon-button" aria-label="Menu" ng-click="$mdMenu.open($event);">
-                        <md-icon>menu</md-icon>
-                    </md-button>
-                    <md-menu-content width="4">
-                        <md-menu-item>
-                            <md-button href="#/pkm/new">
-                                <md-icon md-menu-align-target>fiber_new</md-icon>
-                                New
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button href="#/list">
-                                <md-icon md-menu-align-target>list</md-icon>
-                                List
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-divider></md-menu-divider>
-                        <md-menu-item>
-                            <md-button href="#/about">
-                                <md-icon md-menu-align-target>announcement</md-icon>
-                                About
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-            </div>
-        </md-toolbar>
-        <md-content ng-controller="globalController" ng-init="init()" flex layout="column">
-            <div layout="row" layout-sm="column" layout-align="space-around" ng-show="loading.pkm">
-                <md-progress-circular md-mode="indeterminate" ></md-progress-circular>
-            </div>
-            <ng-view ng-hide="loading.pkm"></ng-view>
-        </md-content>
-    </body>
-    <script src="dist/bundle.js" charset="utf-8"></script>
-
+  <head>
+    <meta charset="utf-8">
+    <title>test</title>
+  </head>
+  <body>
+    Hi
+  </body>
 </html>
