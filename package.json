@@ -3,24 +3,6 @@
   "version": "0.0.1",
   "description": "fast REST builder",
   "main": "server/main.js",
-  "cfg": {
-    "base": "/rest",
-    "static": "/public",
-    "port": 8000,
-    "type": "sqlite",
-    "database": "./test.sqlite",
-    "truncate": false,
-    "models": [
-      {
-        "name": "person",
-        "defaults": {
-          "id": 0,
-          "name": 0,
-          "dob": 0
-        }
-      }
-    ]
-  },
   "scripts": {
     "start": "node ."
   },

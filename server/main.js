@@ -1,3 +1,7 @@
+const { setConfig } = require("../lib/config");
+
+setConfig(require("./CONFIG"));
+
 const Controller = require("./controller");
 
 new Controller("/resource1");

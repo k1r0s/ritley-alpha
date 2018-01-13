@@ -1,8 +1,8 @@
 const { extend, override } = require("kaop");
-const AbstractResourceController = require("../lib/abstract-resource-controller");
+const AbstractResource = require("../lib/abstract-resource");
 const { Log } = require("./logger");
 
-module.exports = Controller = extend(AbstractResourceController, {
+module.exports = Controller = extend(AbstractResource, {
   get: [Log, function(req, res) {
     res.statusCode = 200;
     res.end();

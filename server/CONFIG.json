@@ -1,0 +1,18 @@
+{
+  "base": "/rest",
+  "static": "/public",
+  "port": 8000,
+  "type": "sqlite",
+  "database": "./test.sqlite",
+  "truncate": false,
+  "models": [
+    {
+      "name": "person",
+      "defaults": {
+        "id": 0,
+        "name": 0,
+        "dob": 0
+      }
+    }
+  ]
+}
