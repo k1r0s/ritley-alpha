@@ -2,7 +2,7 @@ const { cfg } = require("../package");
 const { createClass, provider } = require("kaop");
 
 const Config = createClass({
-  package: null,
+  cfg: null,
   constructor() {
     this.cfg = cfg;
   }

@@ -1,19 +1,8 @@
-const { extend, inject, reflect, override } = require("kaop");
+const { extend, inject, override } = require("kaop");
 const AbstractResourceController = require("./abstract-resource-controller");
 const { nodeProvider } = require("./node-server");
 const { ormProvider } = require("./orm-adapter");
-const acho = require("acho");
-const print = acho({
-  outputMessage: message => `${Date.now()} :: ${message}`
-});
-
-const Log = reflect.advice(meta => {
-  const [req, res] = meta.args;
-
-  print.info(`request made to ${req.url}`)
-  print.info(`query %j`, req.query)
-  print.info(`body %j`, req.body)
-})
+const { Log } = require("./logger");
 
 module.exports = Controller = extend(AbstractResourceController, {
 
