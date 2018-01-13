@@ -1,9 +1,14 @@
 {
   "name": "ritley",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "fast REST builder",
   "main": "lib/index.js",
-  "keywords": ["rest", "framework", "http", "services"],
+  "keywords": [
+    "rest",
+    "framework",
+    "http",
+    "services"
+  ],
   "author": "k1r0s",
   "license": "ISC",
   "scripts": {
