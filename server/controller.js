@@ -1,89 +1,66 @@
-const { extend, inject, override } = require("kaop");
+const { extend, inject, reflect, override } = require("kaop");
 const AbstractResourceController = require("./abstract-resource-controller");
 const { nodeProvider } = require("./node-server");
 const { ormProvider } = require("./orm-adapter");
-/**
- * Controlador de recurso REST
- */
+const acho = require("acho");
+const print = acho({
+  outputMessage: message => `${Date.now()} :: ${message}`
+});
+
+const Log = reflect.advice(meta => {
+  const [req, res] = meta.args;
+
+  print.info(`request made to ${req.url}`)
+  print.info(`query %j`, req.query)
+  print.info(`body %j`, req.body)
+})
+
 module.exports = Controller = extend(AbstractResourceController, {
 
-    uri: null,
-    nodeInstance: null,
-    ormInstance: null,
+  nodeInstance: null,
+  ormInstance: null,
 
-    /**
-     * constructor - el constructor del controlador asigna el recurso
-     * a una variable de instancia.
-     *
-     * Al finalizar su ejecuión ejecutará el advice 'resource' sobre el
-     * contexto de esta instancia para mutar su comportamiento
-     *
-     * @param  {type} resourceIdentifier description
-     * @return {type}                    description
-     */
-    constructor: [
-      override.implement,
-      inject.args(nodeProvider, ormProvider),
-      function(superClass, resourceIdentifier, node, orm){
-        console.log(arguments)
-
-        superClass(resourceIdentifier, node);
-        this.nodeInstance = node;
-        this.ormInstance = orm;
-      }
-    ],
-
-    GET() {},
-    PUSH() {},
-    PUT() {},
-    DELETE() {},
-    OPTIONS() {}
+  constructor: [
+    override.implement,
+    inject.args(nodeProvider, ormProvider),
+    function(superClass, resourceIdentifier, node, orm){
+      if(!resourceIdentifier) throw new Error("one argument is required as resource path")
+      superClass(resourceIdentifier, node);
+      this.nodeInstance = node;
+      this.ormInstance = orm;
+    }
+  ],
+  get: [Log, function() {}],
+  push: [Log, function() {}],
+  put: [Log, function() {}],
+  delete: [Log, function() {}],
+  options() {}
+});
 
 /*
-    get: ["translateCRUD", "$inject", function(req, res, $$ormInstance){
-        //validate
-
-
-        return $$ormInstance.do({
-            action: req.action,
-            entity: this.uri,
-            where: req.query
+function writeResult(){
+    var res = meta.args[1];
+    if(meta.result.then){
+        meta.result.then(function(result){
+            res.statusCode = 200;
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.write(JSON.stringify(result));
+            res.end();
         });
-    }, "writeResult"],
-
-    post: ["parseBody", "translateCRUD", "$inject", function(req, res, $$ormInstance){
-
-        return $$ormInstance.do({
-            action: req.action,
-            entity: this.uri,
-            subject: req.body
+        meta.result.catch(function(result){
+            console.log(result);
+            res.statusCode = 500;
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.write(JSON.stringify({ message: "there was an error :(" }));
+            res.end();
         });
-    }, "writeResult"],
-
-    put: ["parseBody", "translateCRUD", "$inject", function(req, res, $$ormInstance){
-
-        return $$ormInstance.do({
-            action: req.action,
-            entity: this.uri,
-            subject: req.body,
-            where: { id: req.body.id }
-        });
-    }, "writeResult"],
-
-
-    delete: ["parseQuery", "translateCRUD", "$inject", function(req, res, $$ormInstance){
-
-        return $$ormInstance.do({
-            action: req.action,
-            entity: this.uri,
-            where: { id: req.query.id }
-        });
-    }, "writeResult"],
-
-    options: [function(){
-        return { status: 200, body: "" };
-    }, "writeResult"]
+    }else{
+        var result = meta.result;
+        res.statusCode = result.status;
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.write(JSON.stringify(result.body));
+        res.end();
+    }
+},
 
 */
-
-});

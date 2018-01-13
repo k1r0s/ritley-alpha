@@ -1,2 +1,2 @@
 const Controller = require("./controller");
-new Controller("person");
+new Controller("/person");

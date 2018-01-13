@@ -6,13 +6,17 @@ const { configProvider } = require("./config");
 const NodeServer = createClass({
   server: null,
   constructor: [inject.args(configProvider), function(config) {
-    this.server = http.createServer();
-    this.server.listen(config.port);
-    console.log("running on port " + process.env.PORT || pkg.cfg.port);
+    const port = config.cfg.port;
+    const staticDir = `${__dirname}/..${config.cfg.static}`;
+    const basePath = config.cfg.base;
 
-    staticMiddleware = ecstatic({ root: __dirname + "/.." + config.static, handleError: false });
-    this.server.on("request", (req, res) => !req.url.startsWith(config.base) && staticMiddleware(req, res));
-    console.log("serving " + __dirname + "/.." + config.static);
+    this.server = http.createServer();
+    this.server.listen(port);
+    console.log(`running on port ${port}`);
+
+    staticMiddleware = ecstatic({ root: `${staticDir}`, handleError: false });
+    this.server.on("request", (req, res) => !req.url.startsWith(basePath) && staticMiddleware(req, res));
+    console.log(`serving ${staticDir} as a static content`);
   }]
 });
 

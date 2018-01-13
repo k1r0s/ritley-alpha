@@ -3,10 +3,16 @@ const { createClass, provider, inject } = require("kaop");
 const { configProvider } = require("./config");
 
 const OrmAdapter = createClass({
-  ready: null,
+  connectionPromise: null,
   constructor: [inject.args(configProvider), function(config) {
-    this.ready = korm.open(config, config.models);
-  }]
+    this.connectionPromise = korm.open(config.cfg, config.cfg.models);
+  }],
+  ready() {
+    return this.connectionPromise;
+  },
+  exec(desc) {
+    return korm.do(desc)
+  }
 });
 
 const ormProvider = provider.singleton(OrmAdapter);

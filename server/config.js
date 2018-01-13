@@ -1,10 +1,10 @@
-const pkg = require("../package");
+const { cfg } = require("../package");
 const { createClass, provider } = require("kaop");
 
 const Config = createClass({
   package: null,
   constructor() {
-    this.package = pkg;
+    this.cfg = cfg;
   }
 });
 
