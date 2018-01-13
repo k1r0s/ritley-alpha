@@ -8,20 +8,15 @@
     "static": "/public",
     "port": 8000,
     "type": "sqlite",
-    "database": "./pkm.sqlite",
+    "database": "./test.sqlite",
     "truncate": false,
     "models": [
       {
-        "name": "pkm",
+        "name": "person",
         "defaults": {
           "id": 0,
-          "date": 0,
-          "name": "",
-          "desc": "",
-          "type1": 0,
-          "type2": 0,
-          "f_ev": 0,
-          "f_iv": 0
+          "name": 0,
+          "dob": 0
         }
       }
     ]
