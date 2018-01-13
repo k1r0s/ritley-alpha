@@ -2,17 +2,15 @@
   "name": "ritley",
   "version": "0.0.1",
   "description": "fast REST builder",
-  "main": "server/main.js",
-  "scripts": {
-    "start": "node ."
-  },
-  "keywords": [],
-  "author": "",
+  "main": "lib/index.js",
+  "keywords": ["rest", "framework", "http", "services"],
+  "author": "k1r0s",
   "license": "ISC",
+  "scripts": {
+    "start": "node example/start"
+  },
   "dependencies": {
-    "acho": "^4.0.1",
     "ecstatic": "~3.1.1",
-    "kaop": "^4.0.2",
-    "korm": "~0.3.0"
+    "kaop": "^4.0.2"
   }
 }
