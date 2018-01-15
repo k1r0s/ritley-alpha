@@ -1,14 +1,18 @@
-const { extend } = require("kaop");
-const { setConfig, AbstractResource } = require("../");
+const { setConfig, AbstractResource, extend } = require("../");
 
 setConfig(require("./ritley.cfg"));
 
-const DummyResource = extend(AbstractResource, {
-  get(req, res) {
-    console.log(req.url);
-    console.log(req.query);
-    console.log(req.body);
-  }
+const BasicResource = extend(AbstractResource, {
+  get(request, response) {
+    console.log(request.query);
+    response.statusCode = 200;
+    response.end();
+  },
+  post(request, response) {
+    console.log(request.body);
+    response.statusCode = 200;
+    response.end();
+  },
 });
 
-new DummyResource("/dummy");
+new BasicResource("/dummy");
