@@ -10,10 +10,25 @@
 #### About
 Ritley is a small package to create REST applications. It allows to create `Resources` as entities which handle requests to the server. You can create as many instances as you need. Also you can extend previous entities to build more complex behaviors. Ritley is build on top `kaop` OOP features. [You may use this package to provide Dependency Injection, Method overriding, Transaction Advices, etc](https://github.com/k1r0s/kaop).
 
-#### Usage
+#### Getting Started
+
+> You may prefer see it directly here [`example/` folder](https://github.com/k1r0s/ritley/tree/master/example)
+
+Install ritley:
+`npm install ritley --save`
+
+Create a file structure like this:
+```
+├── public
+│   └── index.html
+├── ritley.cfg.js
+├── start.js
+└── package.json
+```
+
 Ritley expects to receive a configuration file with some parameters which define its behavior such as these:
 ```javascript
-// ./example/ritley.cfg.js
+// ./ritley.cfg.js
 module.exports = {
   "base": `/rest`,                  // api resource prefix
   "static": `${__dirname}/public`,  // static directory to serve your front
@@ -22,7 +37,7 @@ module.exports = {
 ```
 Then you can pass the config to the providers and start defining your resource by extending from `AbstractResource`. Then you can create instances providing your entity name to be handled:
 ```javascript
-// ./example/start.js
+// ./start.js
 const { setConfig, AbstractResource, extend } = require("ritley");
 
 setConfig(require("./ritley.cfg")); // load configuration
