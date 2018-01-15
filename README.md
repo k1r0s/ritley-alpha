@@ -8,7 +8,7 @@
 [![downloads](https://img.shields.io/npm/dm/ritley.svg)](https://www.npmjs.com/package/ritley)
 
 #### About
-Ritley is a small package to create REST applications. It allows to create `Resources` as entities which handle requests to the server. You can create as many instances as you need. Also you can extend previous entities to build more complex behaviors. Ritley is build on top `kaop` OOP features. [You may use this package to provide Dependency Injection, Method overriding, Transaction Advices, etc](https://github.com/k1r0s/kaop).
+Ritley is a small package __with only two dependencies__ that allows you to create REST applications in no time. You can define `Resources` as entities which handle requests to the server. Create as many instances as you need. Also you can extend (inherit) previous entities to build more complex behaviors. Ritley is build on top `kaop` OOP features. [You may use this package to provide Dependency Injection, Method overriding, Transaction Advices, etc](https://github.com/k1r0s/kaop).
 
 #### Getting Started
 
