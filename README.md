@@ -45,19 +45,21 @@ const { setConfig, AbstractResource, extend } = require("ritley");
 setConfig(require("./ritley.cfg")); // load configuration
 
 const BasicResource = extend(AbstractResource, {
-  get(request, response) { // curl localhost:8080/rest/dummy?id=1 -X GET -v
-    console.log(request.query); // parsed { "id": 1 }
+  get(request, response) {        // curl localhost:8080/rest/dummy?id=1 -X GET -v
+    console.log(this.$abspath);   // "rest/dummy"
+    console.log(this.$uri);       // "dummy"
+    console.log(request.query);   // { "id": 1 }
     response.statusCode = 200;
     response.end();
   },
-  post(request, response) { // curl localhost:8080/rest/dummy -X POST --data '{ "something": 1 }' -v
-    console.log(request.body); // parsed { "something": 1 }
+  post(request, response) {       // curl localhost:8080/rest/dummy -X POST --data '{ "something": 1 }' -v
+    console.log(request.body);    // { "something": 1 }
     response.statusCode = 200;
     response.end();
   },
 });
 
-new BasicResource("/dummy");
+new BasicResource("dummy");
 ```
 
 #### In deep (wip)
@@ -82,6 +84,15 @@ You may create different resources by extending from basic ones if you need to h
 
 #### Docs
 Ritley uses Node's default http package to manage all stuff. You don't have to worry about learn another API but [this one](https://nodejs.org/api/http.html) that you may already known.
+
+For convenience inside any AbstractResource subclass you can access:
+
+```javascript
+this.$uri       // resource name
+this.$srv       // node http server (singleton)
+this.$cfg       // ritley confg object (full)
+this.$abspath   // `${this.$cfg.base}/${this.$uri}`;
+```
 
 #### Examples
 Working 'getting started' [`example/` folder](https://github.com/k1r0s/ritley/tree/master/example)

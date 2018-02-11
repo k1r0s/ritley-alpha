@@ -4,6 +4,7 @@ setConfig(require("./ritley.cfg"));
 
 const BasicResource = extend(AbstractResource, {
   get(request, response) {
+    console.log(this.$uri);
     console.log(request.query);
     response.statusCode = 200;
     response.end();
@@ -15,4 +16,4 @@ const BasicResource = extend(AbstractResource, {
   },
 });
 
-new BasicResource("/dummy");
+new BasicResource("dummy");
