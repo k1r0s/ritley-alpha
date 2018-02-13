@@ -15,7 +15,7 @@
     "start": "node example/start"
   },
   "dependencies": {
-    "ecstatic": "~3.1.1",
+    "ecstatic": "^3.2.0",
     "kaop": "^4.0.2"
   }
 }
