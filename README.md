@@ -85,6 +85,13 @@ You may create different resources by extending from basic ones if you need to h
 #### Docs
 Ritley uses Node's default http package to manage all stuff. You don't have to worry about learn another API but [this one](https://nodejs.org/api/http.html) that you may already known.
 
+Although there are a few aditions:
+
+- `request.query` contains a json representation of querystring parameters
+- `request.body` contains the payload represented in string
+- `request.buffer` contains the binary payload inside a buffer
+- `request.toJSON()` will try to convert request.body to json object using `JSON.parse`
+
 For convenience inside any AbstractResource subclass you can access:
 
 ```javascript
