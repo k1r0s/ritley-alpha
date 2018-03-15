@@ -10,7 +10,9 @@ const BasicResource = extend(AbstractResource, {
     response.end();
   },
   post(request, response) {
+    console.log(request.toJSON());
     console.log(request.body);
+    console.log(request.buffer);
     response.statusCode = 200;
     response.end();
   },

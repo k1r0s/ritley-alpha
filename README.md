@@ -45,15 +45,15 @@ const { setConfig, AbstractResource, extend } = require("ritley");
 setConfig(require("./ritley.cfg")); // load configuration
 
 const BasicResource = extend(AbstractResource, {
-  get(request, response) {        // curl localhost:8080/rest/dummy?id=1 -X GET -v
-    console.log(this.$abspath);   // "rest/dummy"
-    console.log(this.$uri);       // "dummy"
-    console.log(request.query);   // { "id": 1 }
+  get(request, response) {          // curl localhost:8080/rest/dummy?id=1 -X GET -v
+    console.log(this.$abspath);     // "rest/dummy"
+    console.log(this.$uri);         // "dummy"
+    console.log(request.query);     // { "id": 1 }
     response.statusCode = 200;
     response.end();
   },
-  post(request, response) {       // curl localhost:8080/rest/dummy -X POST --data '{ "something": 1 }' -v
-    console.log(request.body);    // { "something": 1 }
+  post(request, response) {         // curl localhost:8080/rest/dummy -X POST --data '{ "something": 1 }' -v
+    console.log(request.toJSON());  // { "something": 1 }
     response.statusCode = 200;
     response.end();
   },
