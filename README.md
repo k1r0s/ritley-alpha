@@ -102,8 +102,9 @@ this.$abspath   // `${this.$cfg.base}/${this.$uri}`;
 ```
 
 #### Examples
-Working 'getting started' [`example/` folder](https://github.com/k1r0s/ritley/tree/master/example)
-
+- Working 'getting started' [`example/` folder](https://github.com/k1r0s/ritley/tree/master/example)
+- [Repo example](https://github.com/k1r0s/micro-ritley-lowdb-example)
+- [Article based on previous repo](https://medium.com/@k1r0s/how-to-write-scalable-nodejs-services-code-examples-b48baa2d9eb9)
 #### Roadmap
 - Create examples for advanced behaviors
 - Setup testing
