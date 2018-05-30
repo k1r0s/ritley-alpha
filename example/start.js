@@ -7,14 +7,14 @@ const BasicResource = extend(AbstractResource, {
     console.log(this.$uri);
     console.log(request.query);
     response.statusCode = 200;
-    response.end();
+    response.end("done");
   },
   post(request, response) {
     console.log(request.toJSON());
     console.log(request.body);
     console.log(request.buffer);
     response.statusCode = 200;
-    response.end();
+    response.end("done");
   },
 });
 

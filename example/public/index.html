@@ -4,7 +4,48 @@
     <meta charset="utf-8">
     <title></title>
   </head>
+  <script type="text/javascript">
+
+    // { query, payload, url, method, success }
+    function doRequest(conf) {
+      var xhr = new XMLHttpRequest();
+      var fullUrl = conf.query instanceof Array ? conf.url + "?" + conf.query.join("&") : conf.url
+      xhr.open(conf.method, fullUrl, true);
+      //Send the proper header information along with the request
+      xhr.onreadystatechange = function() {//Call a function when the state changes.
+        if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+          if(conf.success) conf.success(xhr.responseText);
+        }
+      }
+      xhr.send(conf.payload);
+    }
+
+    function doSimplePOST() {
+      doRequest({
+        method: "POST",
+        payload: '{"name": "M. Rajoy"}',
+        url: 'rest/dummy',
+        success: function(data) {
+          console.log(data);
+        }
+      })
+    }
+
+    function doSimpleGET() {
+      doRequest({
+        method: "GET",
+        query: ["id=123"],
+        url: 'rest/dummy',
+        success: function(data) {
+          console.log(data);
+        }
+      })
+    }
+  </script>
   <body>
-    Hello World!
+
+    <button onclick="doSimpleGET()">do simple get</button>
+    <button onclick="doSimplePOST()">do simple post</button>
+
   </body>
 </html>
